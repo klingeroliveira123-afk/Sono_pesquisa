@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avaliação de Sono e Saúde Esportiva</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #ffffff;
+  color: #1a1a1a;
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: #f0f0f0;
+  z-index: 100;
+}
+.progress-fill {
+  height: 100%;
+  background: #111;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* ── STEP INDICATOR ── */
+.step-indicator {
+  position: fixed;
+  top: 16px; right: 24px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #aaa;
+  letter-spacing: 0.05em;
+  z-index: 101;
+}
+
+/* ── MAIN LAYOUT ── */
+.screen {
+  display: none;
+  min-height: 100vh;
+  animation: fadeUp 0.45s ease;
+}
+.screen.active { display: flex; flex-direction: column; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── WELCOME SCREEN ── */
+.welcome-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+.welcome-logo {
+  width: 40px; height: 40px;
+  background: #111;
+  border-radius: 10px;
+  margin: 0 auto 2.5rem;
+}
+.welcome-wrap h1 {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  color: #111;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+.welcome-wrap p {
+  font-size: 0.95rem;
+  color: #888;
+  max-width: 400px;
+  margin: 0 auto 3rem;
+  font-weight: 300;
+}
+
+/* ── FORM FIELDS ── */
+.field-group {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+.field label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.field input,
+.field select {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #111;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid #e0e0e0;
+  padding: 0.6rem 0;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+.field input:focus,
+.field select:focus {
+  border-bottom-color: #111;
+}
+.field input.err,
+.field select.err {
+  border-bottom-color: #e53e3e;
+}
+.field select option { color: #111; }
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* ── PRIMARY BUTTON ── */
+.btn-main {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 2rem;
+  background: #111;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 0.9rem 2.5rem;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  letter-spacing: 0.02em;
+}
+.btn-main:hover { background: #333; transform: translateY(-1px); }
+.btn-main:active { transform: translateY(0); }
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+.btn-back:hover { color: #111; }
+
+/* ── QUESTIONNAIRE SCREEN ── */
+.q-screen {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 6rem;
+  width: 100%;
+}
+.q-block-header {
+  margin-bottom: 3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+.q-block-tag {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #bbb;
+  margin-bottom: 0.6rem;
+}
+.q-block-title {
+  font-size: 1.4rem;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: #111;
+  margin-bottom: 0.4rem;
+}
+.q-block-desc {
+  font-size: 0.88rem;
+  color: #999;
+  font-weight: 300;
+}
+
+/* ── INSTRUCTION BOX ── */
+.instr {
+  background: #f9f9f9;
+  border-left: 3px solid #111;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 2rem;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.6;
+  border-radius: 0 6px 6px 0;
+}
+.instr strong { color: #111; }
+
+.warn-instr {
+  background: #fffbf0;
+  border-left: 3px solid #e8a020;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 2rem;
+  font-size: 0.85rem;
+  color: #7a5c10;
+  border-radius: 0 6px 6px 0;
+}
+
+/* ── QUESTION CARD ── */
+.q-card {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.q-card:hover { border-color: #e0e0e0; }
+.q-card.answered {
+  border-color: #d4f0e6;
+  background: #fafffe;
+}
+.q-num {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #ccc;
+  margin-bottom: 0.5rem;
+}
+.q-text {
+  font-size: 0.97rem;
+  color: #222;
+  margin-bottom: 1.25rem;
+  line-height: 1.65;
+  font-weight: 400;
+}
+.q-text strong { font-weight: 600; }
+.q-sub {
+  font-size: 0.82rem;
+  color: #aaa;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+/* ── RADIO OPTIONS ── */
+.radio-group { display: flex; flex-direction: column; gap: 6px; }
+.radio-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #fff;
+}
+.radio-opt:hover { border-color: #ccc; background: #fafafa; }
+.radio-opt:has(input:checked) {
+  border-color: #111;
+  background: #f8f8f8;
+}
+.radio-opt input[type="radio"] {
+  accent-color: #111;
+  width: 16px; height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.radio-opt input[type="radio"]:checked + .opt-text { font-weight: 500; color: #111; }
+.opt-text { font-size: 0.9rem; color: #444; }
+
+/* ── SCALE ── */
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #bbb;
+  margin-bottom: 6px;
+  padding: 0 2px;
+}
+.radio-group.scale {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+.radio-group.scale .radio-opt {
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: 0.65rem 0.25rem;
+}
+.radio-group.scale .opt-text { font-size: 0.78rem; margin-top: 4px; }
+
+/* ── INLINE FIELD ── */
+.inline-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 220px;
+}
+.inline-field label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.inline-field input {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #111;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid #e0e0e0;
+  padding: 0.5rem 0;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.inline-field input:focus { border-bottom-color: #111; }
+
+/* ── SECTION DIVIDER ── */
+.sec-divider {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #bbb;
+  margin: 2.5rem 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sec-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #f0f0f0;
+}
+
+/* ── SUB QUESTION ── */
+.sub-q { margin-top: 1.5rem; }
+.sub-q-label {
+  font-size: 0.82rem;
+  color: #888;
+  margin-bottom: 0.6rem;
+  font-style: italic;
+}
+
+/* ── OSTRC ── */
+.ostrc-card {
+  margin-bottom: 1.25rem;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.ostrc-card.answered { border-color: #d4f0e6; }
+.ostrc-card-head {
+  background: #fafafa;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+  border-bottom: 1px solid #f0f0f0;
+}
+.ostrc-card-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 1.5rem; }
+.ostrc-q-text { font-size: 0.93rem; color: #333; margin-bottom: 0.75rem; line-height: 1.6; }
+
+/* ── NAV BUTTONS ── */
+.nav-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+.btn-next {
+  background: #111;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-next:hover { background: #333; transform: translateY(-1px); }
+.btn-finish {
+  background: #111;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-finish:hover { background: #333; }
+
+/* ── REF BOX ── */
+.ref-note {
+  font-size: 0.75rem;
+  color: #ccc;
+  font-style: italic;
+  margin-top: 2rem;
+  line-height: 1.6;
+}
+
+/* ── RESULT SCREEN ── */
+.result-wrap {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 6rem;
+}
+.result-check {
+  width: 56px; height: 56px;
+  border: 1.5px solid #111;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 2rem;
+}
+.result-title {
+  font-size: 1.8rem;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  color: #111;
+  margin-bottom: 0.5rem;
+}
+.result-sub { font-size: 0.9rem; color: #aaa; margin-bottom: 3rem; font-weight: 300; }
+
+.scores-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+.score-tile {
+  padding: 1.25rem;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  text-align: center;
+}
+.score-tile.warn { border-color: #ffe0b2; background: #fffbf5; }
+.score-tile.danger { border-color: #fecaca; background: #fff5f5; }
+.score-tile .s-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #bbb; margin-bottom: 0.5rem; }
+.score-tile .s-val { font-size: 2rem; font-weight: 300; color: #111; line-height: 1; margin-bottom: 0.25rem; }
+.score-tile.warn .s-val { color: #c07000; }
+.score-tile.danger .s-val { color: #c0392b; }
+.score-tile .s-interp { font-size: 0.75rem; color: #aaa; }
+
+.interp-block {
+  background: #fafafa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  font-size: 0.88rem;
+  color: #555;
+  line-height: 1.8;
+}
+.interp-block p + p { margin-top: 0.75rem; }
+.interp-block strong { color: #111; }
+
+.sheets-status {
+  text-align: center;
+  font-size: 0.88rem;
+  min-height: 24px;
+  margin-bottom: 1.5rem;
+  color: #888;
+}
+.sheets-status.ok { color: #1d9e75; }
+.sheets-status.err { color: #c0392b; }
+
+.result-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.btn-action {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.7rem 1.5rem;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1.5px solid #e0e0e0;
+  background: #fff;
+  color: #333;
+}
+.btn-action:hover { border-color: #aaa; color: #111; }
+.btn-action.primary { background: #111; color: #fff; border-color: #111; }
+.btn-action.primary:hover { background: #333; border-color: #333; }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed;
+  bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: #111;
+  color: #fff;
+  padding: 0.65rem 1.4rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  z-index: 999;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: none;
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+#toast.warn { background: #c0392b; }
+
+/* ── PRINT ── */
+@media print {
+  .progress-wrap, .step-indicator, .nav-wrap, .result-actions, #toast { display: none; }
+  .screen { display: block !important; page-break-after: always; }
+  body { color: #000; }
+  .q-card, .ostrc-card { border: 1px solid #ccc; }
+}
+
+@media (max-width: 480px) {
+  .q-screen, .result-wrap { padding: 4rem 1rem 5rem; }
+  .field-row { grid-template-columns: 1fr; gap: 1rem; }
+  .radio-group.scale { grid-template-columns: repeat(5, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+<div class="step-indicator" id="stepIndicator"></div>
+<div id="toast"></div>
+
+<!-- ════════════════════════════════
+     TELA 0 — BOAS-VINDAS
+════════════════════════════════ -->
+<div class="screen active" id="sc0">
+  <div class="welcome-wrap">
+    <div class="welcome-logo"></div>
+    <h1>Avaliação de sono e saúde esportiva</h1>
+    <p>Responda com calma.</p>
+
+    <div class="field-group">
+      <div class="field">
+        <label>Nome completo</label>
+        <input type="text" id="d_nome" placeholder="Seu nome" autocomplete="name">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Idade</label>
+          <input type="number" id="d_idade" placeholder="Anos" min="10" max="100">
+        </div>
+        <div class="field">
+          <label>Sexo</label>
+          <select id="d_sexo">
+            <option value="">—</option>
+            <option>Masculino</option>
+            <option>Feminino</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-main" onclick="startSurvey()">
+      Começar
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+
+    <p style="margin-top:2.5rem;font-size:0.75rem;color:#ccc;font-weight:300;">
+      Dados utilizados exclusivamente para pesquisa científica · Res. CNS 466/2012
+    </p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     TELA 1 — PSQI-BR
+════════════════════════════════ -->
+<div class="screen" id="sc1">
+  <div class="q-screen">
+    <div class="q-block-header">
+      <div class="q-block-tag">Parte 1 de 3</div>
+      <div class="q-block-title">Qualidade do sono</div>
+      <div class="q-block-desc">PSQI-BR — Bertolazi et al., 2011 · Refira-se à <strong>última semana</strong></div>
+    </div>
+
+    <div class="instr">
+      <strong>Instrução:</strong> As questões a seguir referem-se à <strong>última semana</strong>. Suas respostas devem indicar o que ocorreu na maioria dos dias e noites dos últimos 7 dias.
+      <br><small style="color:#e8a020;font-style:italic;">Versão adaptada — período de referência modificado de 1 mês para 7 dias.</small>
+    </div>
+
+    <div class="q-card" id="qp1card">
+      <div class="q-num">Q01</div>
+      <div class="q-text">Quando você geralmente foi para a cama à noite?</div>
+      <div class="inline-field">
+        <label>Horário usual de dormir</label>
+        <input type="time" id="psqi_q1" onchange="markDone('qp1card')">
+      </div>
+    </div>
+
+    <div class="q-card" id="qp2card">
+      <div class="q-num">Q02</div>
+      <div class="q-text">Quanto tempo (em minutos) geralmente levou para adormecer à noite?</div>
+      <div class="inline-field">
+        <label>Minutos para adormecer</label>
+        <input type="number" id="psqi_q2" placeholder="Ex.: 20" min="0" max="240" onchange="markDone('qp2card')">
+      </div>
+    </div>
+
+    <div class="q-card" id="qp3card">
+      <div class="q-num">Q03</div>
+      <div class="q-text">Quando você geralmente levantou de manhã?</div>
+      <div class="inline-field">
+        <label>Horário usual de acordar</label>
+        <input type="time" id="psqi_q3" onchange="markDone('qp3card')">
+      </div>
+    </div>
+
+    <div class="q-card" id="qp4card">
+      <div class="q-num">Q04</div>
+      <div class="q-text">Quantas horas de sono você <strong>realmente teve</strong> por noite? (Pode ser diferente do tempo na cama.)</div>
+      <div class="inline-field">
+        <label>Horas de sono efetivo</label>
+        <input type="number" id="psqi_q4" placeholder="Ex.: 7" step="0.5" min="0" max="24" onchange="markDone('qp4card')">
+      </div>
+    </div>
+
+    <div class="sec-divider">Distúrbios do sono — Q05</div>
+
+    <div class="q-card" id="qp5card">
+      <div class="q-num">Q05</div>
+      <div class="q-text">Com que frequência você teve problema para dormir por causa de:</div>
+      <div class="q-sub">Marque a opção mais adequada para cada situação.</div>
+      <div id="psqi5_items"></div>
+    </div>
+
+    <div class="q-card" id="qp6card">
+      <div class="q-num">Q06</div>
+      <div class="q-text">Como você avaliaria a qualidade do seu sono de uma maneira geral?</div>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="psqi_q6" value="0" onchange="markDone('qp6card')"><span class="opt-text">Muito boa</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q6" value="1" onchange="markDone('qp6card')"><span class="opt-text">Boa</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q6" value="2" onchange="markDone('qp6card')"><span class="opt-text">Ruim</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q6" value="3" onchange="markDone('qp6card')"><span class="opt-text">Muito ruim</span></label>
+      </div>
+    </div>
+
+    <div class="q-card" id="qp7card">
+      <div class="q-num">Q07</div>
+      <div class="q-text">Com que frequência você tomou remédio (prescrito ou por conta própria) para poder dormir?</div>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="psqi_q7" value="0" onchange="markDone('qp7card')"><span class="opt-text">Nenhuma vez na última semana</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q7" value="1" onchange="markDone('qp7card')"><span class="opt-text">Menos de uma vez por semana</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q7" value="2" onchange="markDone('qp7card')"><span class="opt-text">Uma ou duas vezes por semana</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q7" value="3" onchange="markDone('qp7card')"><span class="opt-text">Três ou mais vezes por semana</span></label>
+      </div>
+    </div>
+
+    <div class="q-card" id="qp8card">
+      <div class="q-num">Q08</div>
+      <div class="q-text">Com que frequência você teve dificuldade de ficar acordado enquanto dirigia, comia ou participava de uma atividade social?</div>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="psqi_q8" value="0" onchange="markDone('qp8card')"><span class="opt-text">Nenhuma vez na última semana</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q8" value="1" onchange="markDone('qp8card')"><span class="opt-text">Menos de uma vez por semana</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q8" value="2" onchange="markDone('qp8card')"><span class="opt-text">Uma ou duas vezes por semana</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q8" value="3" onchange="markDone('qp8card')"><span class="opt-text">Três ou mais vezes por semana</span></label>
+      </div>
+    </div>
+
+    <div class="q-card" id="qp9card">
+      <div class="q-num">Q09</div>
+      <div class="q-text">Quão problemático foi para você manter o entusiasmo para realizar as suas atividades habituais?</div>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="psqi_q9" value="0" onchange="markDone('qp9card')"><span class="opt-text">Nenhum problema</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q9" value="1" onchange="markDone('qp9card')"><span class="opt-text">Um problema mínimo</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q9" value="2" onchange="markDone('qp9card')"><span class="opt-text">Um problema moderado</span></label>
+        <label class="radio-opt"><input type="radio" name="psqi_q9" value="3" onchange="markDone('qp9card')"><span class="opt-text">Um grande problema</span></label>
+      </div>
+    </div>
+
+    <p class="ref-note">Referência: Bertolazi AN et al. Sleep Med. 2011;12(1):70–5.</p>
+
+    <div class="nav-wrap">
+      <button class="btn-back" onclick="goTo(0)">← Voltar</button>
+      <button class="btn-next" onclick="goTo(2)">Continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     TELA 2 — IGI-BR
+════════════════════════════════ -->
+<div class="screen" id="sc2">
+  <div class="q-screen">
+    <div class="q-block-header">
+      <div class="q-block-tag">Parte 2 de 3</div>
+      <div class="q-block-title">Gravidade da insônia</div>
+      <div class="q-block-desc">IGI-BR — Castro et al., 2011 · Refira-se às <strong>últimas 2 semanas</strong></div>
+    </div>
+
+    <div class="instr">
+      <strong>Instrução:</strong> Para cada questão, indique a gravidade do(s) seu(s) problema(s) atual(is) de sono nas <strong>últimas 2 semanas</strong>.
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-card" id="qi1card">
+      <div class="q-num">Q01 — Gravidade atual dos problemas de sono</div>
+      <div class="q-text">Avalie a <strong>gravidade</strong> de cada problema:</div>
+
+      <div class="sub-q">
+        <div class="sub-q-label">a) Dificuldade para <em>iniciar</em> o sono</div>
+        <div class="scale-labels"><span>Nenhuma (0)</span><span>Leve (1)</span><span>Moderada (2)</span><span>Grave (3)</span><span>Muito grave (4)</span></div>
+        <div class="radio-group scale">
+          <label class="radio-opt"><input type="radio" name="igi_q1a" value="0" onchange="chkIGI1()"><span class="opt-text">0</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1a" value="1" onchange="chkIGI1()"><span class="opt-text">1</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1a" value="2" onchange="chkIGI1()"><span class="opt-text">2</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1a" value="3" onchange="chkIGI1()"><span class="opt-text">3</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1a" value="4" onchange="chkIGI1()"><span class="opt-text">4</span></label>
+        </div>
+      </div>
+
+      <div class="sub-q">
+        <div class="sub-q-label">b) Dificuldade para <em>manter</em> o sono</div>
+        <div class="scale-labels"><span>Nenhuma (0)</span><span>Leve (1)</span><span>Moderada (2)</span><span>Grave (3)</span><span>Muito grave (4)</span></div>
+        <div class="radio-group scale">
+          <label class="radio-opt"><input type="radio" name="igi_q1b" value="0" onchange="chkIGI1()"><span class="opt-text">0</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1b" value="1" onchange="chkIGI1()"><span class="opt-text">1</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1b" value="2" onchange="chkIGI1()"><span class="opt-text">2</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1b" value="3" onchange="chkIGI1()"><span class="opt-text">3</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1b" value="4" onchange="chkIGI1()"><span class="opt-text">4</span></label>
+        </div>
+      </div>
+
+      <div class="sub-q">
+        <div class="sub-q-label">c) Problema de <em>acordar muito cedo</em></div>
+        <div class="scale-labels"><span>Nenhuma (0)</span><span>Leve (1)</span><span>Moderada (2)</span><span>Grave (3)</span><span>Muito grave (4)</span></div>
+        <div class="radio-group scale">
+          <label class="radio-opt"><input type="radio" name="igi_q1c" value="0" onchange="chkIGI1()"><span class="opt-text">0</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1c" value="1" onchange="chkIGI1()"><span class="opt-text">1</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1c" value="2" onchange="chkIGI1()"><span class="opt-text">2</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1c" value="3" onchange="chkIGI1()"><span class="opt-text">3</span></label>
+          <label class="radio-opt"><input type="radio" name="igi_q1c" value="4" onchange="chkIGI1()"><span class="opt-text">4</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card" id="qi2card">
+      <div class="q-num">Q02</div>
+      <div class="q-text">Quão <strong>satisfeito(a)/insatisfeito(a)</strong> você está com seu padrão de sono atual?</div>
+      <div class="scale-labels"><span>Muito satisfeito (0)</span><span></span><span>Neutro (2)</span><span></span><span>Muito insatisfeito (4)</span></div>
+      <div class="radio-group scale">
+        <label class="radio-opt"><input type="radio" name="igi_q2" value="0" onchange="markDone('qi2card')"><span class="opt-text">0</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q2" value="1" onchange="markDone('qi2card')"><span class="opt-text">1</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q2" value="2" onchange="markDone('qi2card')"><span class="opt-text">2</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q2" value="3" onchange="markDone('qi2card')"><span class="opt-text">3</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q2" value="4" onchange="markDone('qi2card')"><span class="opt-text">4</span></label>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card" id="qi3card">
+      <div class="q-num">Q03</div>
+      <div class="q-text">Até que ponto você considera que seu problema de sono <strong>interfere no seu funcionamento diurno</strong>? (ex.: cansaço, concentração, humor, trabalho)</div>
+      <div class="scale-labels"><span>Nada (0)</span><span></span><span>Um pouco (2)</span><span></span><span>Muito (4)</span></div>
+      <div class="radio-group scale">
+        <label class="radio-opt"><input type="radio" name="igi_q3" value="0" onchange="markDone('qi3card')"><span class="opt-text">0</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q3" value="1" onchange="markDone('qi3card')"><span class="opt-text">1</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q3" value="2" onchange="markDone('qi3card')"><span class="opt-text">2</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q3" value="3" onchange="markDone('qi3card')"><span class="opt-text">3</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q3" value="4" onchange="markDone('qi3card')"><span class="opt-text">4</span></label>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-card" id="qi4card">
+      <div class="q-num">Q04</div>
+      <div class="q-text">Até que ponto você acha que o seu problema de sono é <strong>perceptível para as outras pessoas</strong> em termos do prejuízo à sua qualidade de vida?</div>
+      <div class="scale-labels"><span>Nada (0)</span><span></span><span>Um pouco (2)</span><span></span><span>Muito (4)</span></div>
+      <div class="radio-group scale">
+        <label class="radio-opt"><input type="radio" name="igi_q4" value="0" onchange="markDone('qi4card')"><span class="opt-text">0</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q4" value="1" onchange="markDone('qi4card')"><span class="opt-text">1</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q4" value="2" onchange="markDone('qi4card')"><span class="opt-text">2</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q4" value="3" onchange="markDone('qi4card')"><span class="opt-text">3</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q4" value="4" onchange="markDone('qi4card')"><span class="opt-text">4</span></label>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-card" id="qi5card">
+      <div class="q-num">Q05</div>
+      <div class="q-text">Quão <strong>preocupado(a)/angustiado(a)</strong> você está com seu problema de sono atual?</div>
+      <div class="scale-labels"><span>Nada (0)</span><span></span><span>Um pouco (2)</span><span></span><span>Muito (4)</span></div>
+      <div class="radio-group scale">
+        <label class="radio-opt"><input type="radio" name="igi_q5" value="0" onchange="markDone('qi5card')"><span class="opt-text">0</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q5" value="1" onchange="markDone('qi5card')"><span class="opt-text">1</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q5" value="2" onchange="markDone('qi5card')"><span class="opt-text">2</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q5" value="3" onchange="markDone('qi5card')"><span class="opt-text">3</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q5" value="4" onchange="markDone('qi5card')"><span class="opt-text">4</span></label>
+      </div>
+    </div>
+
+    <!-- Duração — dado clínico complementar -->
+    <div class="sec-divider">Dado clínico complementar</div>
+    <div class="q-card" id="qi6card">
+      <div class="q-num">Duração</div>
+      <div class="q-text">Há quanto tempo você tem problema(s) de sono?</div>
+      <div class="q-sub">Este item não pontua no escore do IGI — registrado para caracterização da amostra.</div>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="igi_q6" value="Menos de 1 mes" onchange="markDone('qi6card')"><span class="opt-text">Menos de 1 mês</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q6" value="1 a 3 meses (aguda)" onchange="markDone('qi6card')"><span class="opt-text">1 a 3 meses — insônia aguda</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q6" value="Mais de 3 meses (cronica)" onchange="markDone('qi6card')"><span class="opt-text">Mais de 3 meses — insônia crônica</span></label>
+        <label class="radio-opt"><input type="radio" name="igi_q6" value="Sem problemas de sono" onchange="markDone('qi6card')"><span class="opt-text">Não tenho problemas de sono</span></label>
+      </div>
+    </div>
+
+    <p class="ref-note">Referência: Castro LS et al. Sleep Med. 2011;12(5):500–3. Pontos de corte: 0–7 sem insônia; 8–14 subclínica; 15–21 moderada; 22–28 grave.</p>
+
+    <div class="nav-wrap">
+      <button class="btn-back" onclick="goTo(1)">← Voltar</button>
+      <button class="btn-next" onclick="goTo(3)">Continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     TELA 3 — OSTRC-BR
+════════════════════════════════ -->
+<div class="screen" id="sc3">
+  <div class="q-screen">
+    <div class="q-block-header">
+      <div class="q-block-tag">Parte 3 de 3</div>
+      <div class="q-block-title">Queixas músculo-esqueléticas</div>
+      <div class="q-block-desc">OSTRC-BR — Barbosa et al., 2016 · Últimas <strong>4 semanas</strong></div>
+    </div>
+
+    <div class="instr">
+      <strong>Instrução:</strong> Para cada região do corpo, indique se você teve algum problema relacionado à prática esportiva nas <strong>últimas 4 semanas</strong> — mesmo que não tenha impedido sua participação.
+    </div>
+    <div class="warn-instr">
+      ⚠ Inclua todos os problemas relacionados ao esporte, mesmo os menores. Responda para cada região separadamente.
+    </div>
+
+    <div id="ostrc_container"></div>
+
+    <p class="ref-note">Referência: Barbosa GMV et al. Braz J Phys Ther. 2016. Escore por região: 0–100 (4 dimensões × 25 pts).</p>
+
+    <div class="nav-wrap">
+      <button class="btn-back" onclick="goTo(2)">← Voltar</button>
+      <button class="btn-finish" onclick="finalize()">Concluir e ver resultados</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     TELA 4 — RESULTADOS
+════════════════════════════════ -->
+<div class="screen" id="sc4">
+  <div class="result-wrap">
+    <div class="result-check">✓</div>
+    <div class="result-title">Coleta concluída</div>
+    <div class="result-sub">Escores calculados conforme os instrumentos validados.</div>
+
+    <div class="scores-row" id="scores_display"></div>
+
+    <div class="interp-block" id="interpretations"></div>
+
+    <div class="sheets-status" id="sheets_status">Enviando para a planilha...</div>
+
+    <div class="result-actions">
+      <button class="btn-action primary" onclick="exportExcel()">↓ Exportar Excel</button>
+      <button class="btn-action" onclick="window.print()">Imprimir</button>
+      <button class="btn-action" onclick="resetForm()">Nova coleta</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════
+// CONFIG
+// ════════════════════════════
+var SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxmyflDIGc11if5s3M58iibg817S5pe9fPjw8uWQGVQ1CxYxHpsv7oDlBejv3VY1isT/exec';
+var TOTAL_SCREENS = 5;
+var currentScreen = 0;
+
+// ════════════════════════════
+// PSQI Q5 — subitens
+// ════════════════════════════
+var psqi5Items = [
+  { id:'a', text:'(A) Nao conseguiu adormecer em ate 30 minutos' },
+  { id:'b', text:'(B) Acordou no meio da noite ou de manha cedo' },
+  { id:'c', text:'(C) Precisou levantar para ir ao banheiro' },
+  { id:'d', text:'(D) Nao conseguiu respirar confortavelmente' },
+  { id:'e', text:'(E) Tossiu ou roncou forte' },
+  { id:'f', text:'(F) Sentiu muito frio' },
+  { id:'g', text:'(G) Sentiu muito calor' },
+  { id:'h', text:'(H) Teve sonhos ruins' },
+  { id:'i', text:'(I) Teve dor' },
+  { id:'j', text:'(J) Outra razao' },
+];
+var freqOpts = [
+  { v:'0', l:'Nenhuma vez na ultima semana' },
+  { v:'1', l:'Menos de 1x/semana' },
+  { v:'2', l:'1 a 2x/semana' },
+  { v:'3', l:'3 ou mais vezes/semana' },
+];
+(function buildPSQI5() {
+  var cont = document.getElementById('psqi5_items');
+  psqi5Items.forEach(function(item) {
+    var div = document.createElement('div');
+    div.style.cssText = 'margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid #f5f5f5;';
+    var opts = freqOpts.map(function(o) {
+      return '<label class="radio-opt"><input type="radio" name="psqi5_' + item.id + '" value="' + o.v + '" onchange="markDone(\'qp5card\')"><span class="opt-text">' + o.l + '</span></label>';
+    }).join('');
+    var extra = item.id === 'j' ? '<input type="text" id="psqi5j_detail" placeholder="Especifique..." style="margin-top:0.6rem;font-family:Inter,sans-serif;font-size:0.88rem;color:#111;background:transparent;border:none;border-bottom:1px solid #e0e0e0;padding:0.4rem 0;outline:none;width:100%;">' : '';
+    div.innerHTML = '<div style="font-size:0.88rem;color:#555;margin-bottom:0.6rem;">' + item.text + '</div><div class="radio-group">' + opts + '</div>' + extra;
+    cont.appendChild(div);
+  });
+})();
+
+// ════════════════════════════
+// OSTRC — regioes
+// ════════════════════════════
+var ostrcRegioes = [
+  'Cabeca','Pescoco',
+  'Ombro direito','Ombro esquerdo',
+  'Cotovelo direito','Cotovelo esquerdo',
+  'Punho e mao direito','Punho e mao esquerdo',
+  'Tronco e regiao lombar',
+  'Quadril e virilha direito','Quadril e virilha esquerdo',
+  'Coxa direita','Coxa esquerda',
+  'Joelho direito','Joelho esquerdo',
+  'Perna, tornozelo e pe direito','Perna, tornozelo e pe esquerdo',
+];
+var ostrcQs = [
+  { id:'q1', text:'Voce teve alguma dificuldade em <strong>participar plenamente</strong> nas atividades de treinamento e competicao por causa de um problema nessa regiao nas ultimas 4 semanas?',
+    opts:[{v:'0',l:'Participacao plena, sem problema'},{v:'8',l:'Participacao plena, mas com problema'},{v:'17',l:'Participacao reduzida'},{v:'25',l:'Nao conseguiu participar'}] },
+  { id:'q2', text:'Em que medida voce <strong>reduziu o volume</strong> de treinamento por causa desse problema?',
+    opts:[{v:'0',l:'Sem reducao'},{v:'8',l:'Reducao menor que 25%'},{v:'17',l:'Reducao de 25 a 50%'},{v:'25',l:'Reducao maior que 50%'}] },
+  { id:'q3', text:'Em que medida esse problema <strong>afetou seu desempenho</strong> esportivo?',
+    opts:[{v:'0',l:'Sem afetacao'},{v:'8',l:'Afetacao leve'},{v:'17',l:'Afetacao moderada'},{v:'25',l:'Afetacao grave'}] },
+  { id:'q4', text:'Qual foi o grau de <strong>dor ou outros sintomas</strong> nessa regiao durante o treinamento?',
+    opts:[{v:'0',l:'Nenhuma dor ou sintoma'},{v:'8',l:'Dor ou sintoma leve'},{v:'17',l:'Dor ou sintoma moderado'},{v:'25',l:'Dor ou sintoma grave'}] },
+];
+(function buildOSTRC() {
+  var cont = document.getElementById('ostrc_container');
+  ostrcRegioes.forEach(function(reg, ri) {
+    var card = document.createElement('div');
+    card.className = 'ostrc-card';
+    card.id = 'ostrc_card_' + ri;
+    var body = ostrcQs.map(function(q) {
+      var opts = q.opts.map(function(o) {
+        return '<label class="radio-opt"><input type="radio" name="ostrc_' + ri + '_' + q.id + '" value="' + o.v + '" onchange="chkOSTRC(' + ri + ')"><span class="opt-text">' + o.l + '</span></label>';
+      }).join('');
+      return '<div><div class="ostrc-q-text">' + q.text + '</div><div class="radio-group">' + opts + '</div></div>';
+    }).join('');
+    card.innerHTML = '<div class="ostrc-card-head">' + reg + '</div><div class="ostrc-card-body">' + body + '</div>';
+    cont.appendChild(card);
+  });
+})();
+
+// ════════════════════════════
+// NAVEGAÇÃO
+// ════════════════════════════
+function goTo(n) {
+  document.getElementById('sc' + currentScreen).classList.remove('active');
+  document.getElementById('sc' + n).classList.add('active');
+  currentScreen = n;
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  var pct = (currentScreen / (TOTAL_SCREENS - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  if (currentScreen === 0) {
+    document.getElementById('stepIndicator').textContent = '';
+  } else if (currentScreen < 4) {
+    document.getElementById('stepIndicator').textContent = currentScreen + ' / 3';
+  } else {
+    document.getElementById('stepIndicator').textContent = '';
+  }
+}
+
+function startSurvey() {
+  var nome = document.getElementById('d_nome').value.trim();
+  var idade = document.getElementById('d_idade').value.trim();
+  var sexo = document.getElementById('d_sexo').value;
+  var ok = true;
+  if (!nome) { document.getElementById('d_nome').classList.add('err'); ok = false; } else { document.getElementById('d_nome').classList.remove('err'); }
+  if (!idade) { document.getElementById('d_idade').classList.add('err'); ok = false; } else { document.getElementById('d_idade').classList.remove('err'); }
+  if (!sexo) { document.getElementById('d_sexo').classList.add('err'); ok = false; } else { document.getElementById('d_sexo').classList.remove('err'); }
+  if (!ok) { showToast('Preencha nome, idade e sexo', true); return; }
+  goTo(1);
+}
+
+// ════════════════════════════
+// UI HELPERS
+// ════════════════════════════
+function markDone(id) { document.getElementById(id).classList.add('answered'); }
+function chkIGI1() {
+  if (document.querySelector('[name="igi_q1a"]:checked') &&
+      document.querySelector('[name="igi_q1b"]:checked') &&
+      document.querySelector('[name="igi_q1c"]:checked')) markDone('qi1card');
+}
+function chkOSTRC(ri) {
+  var all = ostrcQs.every(function(q) { return document.querySelector('[name="ostrc_' + ri + '_' + q.id + '"]:checked'); });
+  if (all) document.getElementById('ostrc_card_' + ri).classList.add('answered');
+}
+function getRadio(name) {
+  var el = document.querySelector('[name="' + name + '"]:checked');
+  return el ? el.value : null;
+}
+function showToast(msg, warn) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = warn ? 'warn show' : 'show';
+  setTimeout(function() { t.className = warn ? 'warn' : ''; }, 3000);
+}
+
+// ════════════════════════════
+// CÁLCULO PSQI-BR
+// ════════════════════════════
+function calcPSQI() {
+  var c1 = parseInt(getRadio('psqi_q6') || 0);
+
+  var lat = parseInt(document.getElementById('psqi_q2').value || 0);
+  var latScore = lat <= 15 ? 0 : lat <= 30 ? 1 : lat <= 60 ? 2 : 3;
+  var q5a = parseInt(getRadio('psqi5_a') || 0);
+  var latSum = latScore + q5a;
+  var c2 = latSum === 0 ? 0 : latSum <= 2 ? 1 : latSum <= 4 ? 2 : 3;
+
+  var dur = parseFloat(document.getElementById('psqi_q4').value || 0);
+  var c3 = dur > 7 ? 0 : dur >= 6 ? 1 : dur >= 5 ? 2 : 3;
+
+  var c4 = 0;
+  try {
+    var bed = document.getElementById('psqi_q1').value;
+    var wake = document.getElementById('psqi_q3').value;
+    if (bed && wake && dur > 0) {
+      var bParts = bed.split(':').map(Number);
+      var wParts = wake.split(':').map(Number);
+      var inBedMin = (wParts[0]*60+wParts[1]) - (bParts[0]*60+bParts[1]);
+      if (inBedMin <= 0) inBedMin += 1440;
+      var eff = (dur / (inBedMin/60)) * 100;
+      c4 = eff >= 85 ? 0 : eff >= 75 ? 1 : eff >= 65 ? 2 : 3;
+    }
+  } catch(e) {}
+
+  var d5 = 0;
+  ['b','c','d','e','f','g','h','i','j'].forEach(function(l) { d5 += parseInt(getRadio('psqi5_' + l) || 0); });
+  var c5 = d5 === 0 ? 0 : d5 <= 9 ? 1 : d5 <= 18 ? 2 : 3;
+
+  var c6 = parseInt(getRadio('psqi_q7') || 0);
+
+  var d7 = parseInt(getRadio('psqi_q8') || 0) + parseInt(getRadio('psqi_q9') || 0);
+  var c7 = d7 === 0 ? 0 : d7 <= 2 ? 1 : d7 <= 4 ? 2 : 3;
+
+  return { total: c1+c2+c3+c4+c5+c6+c7, c1:c1, c2:c2, c3:c3, c4:c4, c5:c5, c6:c6, c7:c7 };
+}
+
+// ════════════════════════════
+// CÁLCULO IGI-BR
+// ════════════════════════════
+function calcIGI() {
+  var q1a = parseInt(getRadio('igi_q1a') || 0);
+  var q1b = parseInt(getRadio('igi_q1b') || 0);
+  var q1c = parseInt(getRadio('igi_q1c') || 0);
+  var q2  = parseInt(getRadio('igi_q2')  || 0);
+  var q3  = parseInt(getRadio('igi_q3')  || 0);
+  var q4  = parseInt(getRadio('igi_q4')  || 0);
+  var q5  = parseInt(getRadio('igi_q5')  || 0);
+  return { total: q1a+q1b+q1c+q2+q3+q4+q5, q1a:q1a, q1b:q1b, q1c:q1c, q2:q2, q3:q3, q4:q4, q5:q5 };
+}
+function classIGI(s) {
+  return s <= 7 ? 'Ausencia de insonia clinicamente significativa' : s <= 14 ? 'Insonia subClinica' : s <= 21 ? 'Insonia moderada' : 'Insonia grave';
+}
+
+// ════════════════════════════
+// CÁLCULO OSTRC-BR
+// ════════════════════════════
+function calcOSTRC() {
+  var scores = ostrcRegioes.map(function(reg, ri) {
+    var s = ostrcQs.reduce(function(acc, q) { return acc + parseInt(getRadio('ostrc_' + ri + '_' + q.id) || 0); }, 0);
+    return { regiao: reg, score: s };
+  });
+  var affected = scores.filter(function(s) { return s.score > 0; });
+  var total = scores.reduce(function(a, b) { return a + b.score; }, 0);
+  return { scores: scores, affected: affected, totalBurden: total };
+}
+
+// ════════════════════════════
+// BUILD ROW
+// ════════════════════════════
+function buildRow() {
+  var psqi  = calcPSQI();
+  var igi   = calcIGI();
+  var ostrc = calcOSTRC();
+  var hoje  = new Date().toISOString().split('T')[0];
+
+  var row = {
+    'Data_coleta':   hoje,
+    'Nome':          document.getElementById('d_nome').value,
+    'Idade_anos':    document.getElementById('d_idade').value,
+    'Sexo':          document.getElementById('d_sexo').value,
+  };
+
+  // PSQI bruto
+  row['PSQI_Q1_horaDormir']   = document.getElementById('psqi_q1').value;
+  row['PSQI_Q2_latencia_min'] = document.getElementById('psqi_q2').value;
+  row['PSQI_Q3_horaAcordar']  = document.getElementById('psqi_q3').value;
+  row['PSQI_Q4_horasSono']    = document.getElementById('psqi_q4').value;
+  psqi5Items.forEach(function(it) { row['PSQI_Q5' + it.id.toUpperCase()] = getRadio('psqi5_' + it.id) || ''; });
+  var jdet = document.getElementById('psqi5j_detail');
+  row['PSQI_Q5J_especif']      = jdet ? jdet.value : '';
+  row['PSQI_Q6_qualSono']      = getRadio('psqi_q6') || '';
+  row['PSQI_Q7_medSono']       = getRadio('psqi_q7') || '';
+  row['PSQI_Q8_sonoliaDiurna'] = getRadio('psqi_q8') || '';
+  row['PSQI_Q9_entusiasmo']    = getRadio('psqi_q9') || '';
+  // PSQI componentes
+  row['PSQI_C1'] = psqi.c1; row['PSQI_C2'] = psqi.c2; row['PSQI_C3'] = psqi.c3; row['PSQI_C4'] = psqi.c4;
+  row['PSQI_C5'] = psqi.c5; row['PSQI_C6'] = psqi.c6; row['PSQI_C7'] = psqi.c7;
+  row['PSQI_Total'] = psqi.total;
+  row['PSQI_Classificacao'] = psqi.total <= 5 ? 'Boa qualidade de sono' : 'Ma qualidade de sono';
+
+  // IGI
+  row['IGI_Q1a'] = igi.q1a; row['IGI_Q1b'] = igi.q1b; row['IGI_Q1c'] = igi.q1c;
+  row['IGI_Q2']  = igi.q2;  row['IGI_Q3']  = igi.q3;  row['IGI_Q4']  = igi.q4; row['IGI_Q5'] = igi.q5;
+  row['IGI_Duracao_problema'] = getRadio('igi_q6') || '';
+  row['IGI_Total'] = igi.total;
+  row['IGI_Classificacao'] = classIGI(igi.total);
+
+  // OSTRC
+  ostrc.scores.forEach(function(s, i) {
+    var k = s.regiao.replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g,'_').replace(/_$/g,'');
+    row['OSTRC_' + k + '_Q1'] = getRadio('ostrc_' + i + '_q1') || '0';
+    row['OSTRC_' + k + '_Q2'] = getRadio('ostrc_' + i + '_q2') || '0';
+    row['OSTRC_' + k + '_Q3'] = getRadio('ostrc_' + i + '_q3') || '0';
+    row['OSTRC_' + k + '_Q4'] = getRadio('ostrc_' + i + '_q4') || '0';
+    row['OSTRC_' + k + '_Total'] = s.score;
+  });
+  row['OSTRC_Regioes_afetadas'] = ostrc.affected.length;
+  row['OSTRC_Carga_total'] = ostrc.totalBurden;
+
+  return row;
+}
+
+// ════════════════════════════
+// ENVIO GOOGLE SHEETS
+// ════════════════════════════
+function sendToSheets(row) {
+  var statusEl = document.getElementById('sheets_status');
+  statusEl.className = 'sheets-status';
+  statusEl.textContent = 'Enviando para a planilha...';
+
+  var formData = new FormData();
+  formData.append('payload', JSON.stringify(row));
+
+  fetch(SHEETS_URL, { method: 'POST', body: formData })
+    .then(function(res) { return res.text(); })
+    .then(function(text) {
+      try {
+        var json = JSON.parse(text);
+        if (json.status === 'ok') throw null;
+      } catch(e) {}
+      statusEl.className = 'sheets-status ok';
+      statusEl.textContent = 'Dados enviados ao Google Sheets com sucesso.';
+    })
+    .catch(function() {
+      statusEl.className = 'sheets-status err';
+      statusEl.textContent = 'Falha no envio. Use "Exportar Excel" como backup.';
+    });
+}
+
+// ════════════════════════════
+// FINALIZAR
+// ════════════════════════════
+function finalize() {
+  goTo(4);
+  var psqi  = calcPSQI();
+  var igi   = calcIGI();
+  var ostrc = calcOSTRC();
+
+  var psqiOk = psqi.total <= 5;
+  var igiCls = igi.total <= 14 ? '' : igi.total <= 21 ? 'warn' : 'danger';
+  var ostrCls = ostrc.totalBurden >= 50 ? 'warn' : '';
+
+  document.getElementById('scores_display').innerHTML =
+    '<div class="score-tile ' + (psqiOk ? '' : 'warn') + '">' +
+      '<div class="s-label">PSQI-BR</div>' +
+      '<div class="s-val">' + psqi.total + '</div>' +
+      '<div class="s-interp">' + (psqiOk ? 'Boa qualidade' : 'Ma qualidade') + '</div>' +
+    '</div>' +
+    '<div class="score-tile ' + igiCls + '">' +
+      '<div class="s-label">IGI-BR</div>' +
+      '<div class="s-val">' + igi.total + '</div>' +
+      '<div class="s-interp">' + classIGI(igi.total) + '</div>' +
+    '</div>' +
+    '<div class="score-tile ' + ostrCls + '">' +
+      '<div class="s-label">OSTRC</div>' +
+      '<div class="s-val">' + ostrc.totalBurden + '</div>' +
+      '<div class="s-interp">' + ostrc.affected.length + ' regiao(es) afetada(s)</div>' +
+    '</div>';
+
+  var afet = ostrc.affected.length ? ostrc.affected.map(function(a) { return a.regiao + ' (' + a.score + 'pts)'; }).join('; ') : 'nenhuma';
+
+  document.getElementById('interpretations').innerHTML =
+    '<p><strong>PSQI-BR (' + psqi.total + ' pts):</strong> Ponto de corte: <= 5 = boa qualidade; > 5 = ma qualidade. ' +
+    'Componentes: C1=' + psqi.c1 + ' C2=' + psqi.c2 + ' C3=' + psqi.c3 + ' C4=' + psqi.c4 + ' C5=' + psqi.c5 + ' C6=' + psqi.c6 + ' C7=' + psqi.c7 + '.</p>' +
+    '<p><strong>IGI-BR (' + igi.total + ' pts):</strong> 0–7 sem insonia; 8–14 subClinica; 15–21 moderada; 22–28 grave. ' +
+    'Classificacao: ' + classIGI(igi.total) + '.</p>' +
+    '<p><strong>OSTRC-BR (carga ' + ostrc.totalBurden + '):</strong> Regioes afetadas: ' + afet + '.</p>';
+
+  var row = buildRow();
+  sendToSheets(row);
+}
+
+// ════════════════════════════
+// EXPORTAR EXCEL
+// ════════════════════════════
+function exportExcel() {
+  var row = buildRow();
+  var ws = XLSX.utils.json_to_sheet([row]);
+  ws['!cols'] = Object.keys(row).map(function(k) { return { wch: Math.max(k.length + 2, 12) }; });
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Dados');
+  var nome = (document.getElementById('d_nome').value || 'participante').replace(/\s+/g,'_');
+  var data = new Date().toISOString().split('T')[0].replace(/-/g,'');
+  XLSX.writeFile(wb, 'PSQI_IGI_OSTRC_' + nome + '_' + data + '.xlsx');
+  showToast('Excel gerado!');
+}
+
+// ════════════════════════════
+// RESET
+// ════════════════════════════
+function resetForm() {
+  if (!confirm('Limpar tudo e iniciar nova coleta?')) return;
+  document.querySelectorAll('input:not([type="radio"])').forEach(function(el) { el.value = ''; });
+  document.querySelectorAll('input[type="radio"]').forEach(function(el) { el.checked = false; });
+  document.querySelectorAll('select').forEach(function(el) { el.selectedIndex = 0; });
+  document.querySelectorAll('.answered').forEach(function(el) { el.classList.remove('answered'); });
+  document.getElementById('sheets_status').textContent = '';
+  goTo(0);
+}
+</script>
+</body>
+</html>
