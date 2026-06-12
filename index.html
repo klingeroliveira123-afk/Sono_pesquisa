@@ -731,11 +731,11 @@ body {
     <div class="q-block-header">
       <div class="q-block-tag">Parte 2 de 3</div>
       <div class="q-block-title">Gravidade da insônia</div>
-      <div class="q-block-desc">IGI-BR — Castro et al., 2011 · Refira-se às <strong>últimas 2 semanas</strong></div>
+      <div class="q-block-desc">IGI-BR — Castro et al., 2011 · Refira-se aos <strong>últimos 7 dias</strong></div>
     </div>
 
     <div class="instr">
-      <strong>Instrução:</strong> Para cada questão, indique a gravidade do(s) seu(s) problema(s) atual(is) de sono nas <strong>últimas 2 semanas</strong>.
+      <strong>Instrução:</strong> Para cada questão, indique a gravidade do(s) seu(s) problema(s) atual(is) de sono nos <strong>últimos 7 dias</strong>.
     </div>
 
     <!-- Q1 -->
@@ -867,11 +867,11 @@ body {
     <div class="q-block-header">
       <div class="q-block-tag">Parte 3 de 3</div>
       <div class="q-block-title">Queixas músculo-esqueléticas</div>
-      <div class="q-block-desc">OSTRC-BR — Barbosa et al., 2016 · Últimas <strong>4 semanas</strong></div>
+      <div class="q-block-desc">OSTRC-BR — Barbosa et al., 2016 · Últimos <strong>7 dias</strong></div>
     </div>
 
     <div class="instr">
-      <strong>Instrução:</strong> Para cada região do corpo, indique se você teve algum problema relacionado à prática esportiva nas <strong>últimas 4 semanas</strong> — mesmo que não tenha impedido sua participação.
+      <strong>Instrução:</strong> Para cada região do corpo, indique se você teve algum problema relacionado à prática esportiva nos <strong>últimos 7 dias</strong> — mesmo que não tenha impedido sua participação.
     </div>
     <div class="warn-instr">
       ⚠ Inclua todos os problemas relacionados ao esporte, mesmo os menores. Responda para cada região separadamente.
@@ -879,7 +879,7 @@ body {
 
     <div id="ostrc_container"></div>
 
-    <p class="ref-note">Referência: Barbosa GMV et al. Braz J Phys Ther. 2016. Escore por região: 0–100 (4 dimensões × 25 pts).</p>
+    <p class="ref-note">Referência: Barbosa GMV et al. Braz J Phys Ther. 2016. Escore por região: 0–100 (4 dimensões × 25 pts). Período adaptado para 7 dias.</p>
 
     <div class="nav-wrap">
       <button class="btn-back" onclick="goTo(2)">← Voltar</button>
@@ -969,13 +969,13 @@ var ostrcRegioes = [
   'Perna, tornozelo e pe direito','Perna, tornozelo e pe esquerdo',
 ];
 var ostrcQs = [
-  { id:'q1', text:'Voce teve alguma dificuldade em <strong>participar plenamente</strong> nas atividades de treinamento e competicao por causa de um problema nessa regiao nas ultimas 4 semanas?',
+  { id:'q1', text:'Voce teve alguma dificuldade em <strong>participar plenamente</strong> nas atividades de treinamento e competicao por causa de um problema nessa regiao nos ultimos 7 dias?',
     opts:[{v:'0',l:'Participacao plena, sem problema'},{v:'8',l:'Participacao plena, mas com problema'},{v:'17',l:'Participacao reduzida'},{v:'25',l:'Nao conseguiu participar'}] },
-  { id:'q2', text:'Em que medida voce <strong>reduziu o volume</strong> de treinamento por causa desse problema?',
+  { id:'q2', text:'Em que medida voce <strong>reduziu o volume</strong> de treinamento por causa desse problema nos ultimos 7 dias?',
     opts:[{v:'0',l:'Sem reducao'},{v:'8',l:'Reducao menor que 25%'},{v:'17',l:'Reducao de 25 a 50%'},{v:'25',l:'Reducao maior que 50%'}] },
-  { id:'q3', text:'Em que medida esse problema <strong>afetou seu desempenho</strong> esportivo?',
+  { id:'q3', text:'Em que medida esse problema <strong>afetou seu desempenho</strong> esportivo nos ultimos 7 dias?',
     opts:[{v:'0',l:'Sem afetacao'},{v:'8',l:'Afetacao leve'},{v:'17',l:'Afetacao moderada'},{v:'25',l:'Afetacao grave'}] },
-  { id:'q4', text:'Qual foi o grau de <strong>dor ou outros sintomas</strong> nessa regiao durante o treinamento?',
+  { id:'q4', text:'Qual foi o grau de <strong>dor ou outros sintomas</strong> nessa regiao durante o treinamento nos ultimos 7 dias?',
     opts:[{v:'0',l:'Nenhuma dor ou sintoma'},{v:'8',l:'Dor ou sintoma leve'},{v:'17',l:'Dor ou sintoma moderado'},{v:'25',l:'Dor ou sintoma grave'}] },
 ];
 (function buildOSTRC() {
