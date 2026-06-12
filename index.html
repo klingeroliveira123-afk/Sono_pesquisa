@@ -867,7 +867,7 @@ body {
     <div class="q-block-header">
       <div class="q-block-tag">Parte 3 de 3</div>
       <div class="q-block-title">Queixas músculo-esqueléticas</div>
-      <div class="q-block-desc">OSTRC-BR — Barbosa et al., 2016 · Últimos <strong>7 dias</strong></div>
+      <div class="q-block-desc">OSTRC-BR — Pimenta, Hespanhol &amp; Lopes, 2021 · Semana passada (últimos 7 dias)</div>
     </div>
 
     <div class="instr">
@@ -879,7 +879,7 @@ body {
 
     <div id="ostrc_container"></div>
 
-    <p class="ref-note">Referência: Barbosa GMV et al. Braz J Phys Ther. 2016. Escore por região: 0–100 (4 dimensões × 25 pts). Período adaptado para 7 dias.</p>
+    <p class="ref-note">Referência: Pimenta RM, Hespanhol L, Lopes AD. Braz J Phys Ther. 2021;25(6):785–793. Q1 e Q4: 0,8,17,25 · Q2 e Q3: 0,6,13,19,25 · Escore por região: 0–100. Período adaptado para 7 dias.</p>
 
     <div class="nav-wrap">
       <button class="btn-back" onclick="goTo(2)">← Voltar</button>
@@ -969,14 +969,14 @@ var ostrcRegioes = [
   'Perna, tornozelo e pe direito','Perna, tornozelo e pe esquerdo',
 ];
 var ostrcQs = [
-  { id:'q1', text:'Voce teve alguma dificuldade em <strong>participar plenamente</strong> nas atividades de treinamento e competicao por causa de um problema nessa regiao nos ultimos 7 dias?',
-    opts:[{v:'0',l:'Participacao plena, sem problema'},{v:'8',l:'Participacao plena, mas com problema'},{v:'17',l:'Participacao reduzida'},{v:'25',l:'Nao conseguiu participar'}] },
-  { id:'q2', text:'Em que medida voce <strong>reduziu o volume</strong> de treinamento por causa desse problema nos ultimos 7 dias?',
-    opts:[{v:'0',l:'Sem reducao'},{v:'8',l:'Reducao menor que 25%'},{v:'17',l:'Reducao de 25 a 50%'},{v:'25',l:'Reducao maior que 50%'}] },
-  { id:'q3', text:'Em que medida esse problema <strong>afetou seu desempenho</strong> esportivo nos ultimos 7 dias?',
-    opts:[{v:'0',l:'Sem afetacao'},{v:'8',l:'Afetacao leve'},{v:'17',l:'Afetacao moderada'},{v:'25',l:'Afetacao grave'}] },
-  { id:'q4', text:'Qual foi o grau de <strong>dor ou outros sintomas</strong> nessa regiao durante o treinamento nos ultimos 7 dias?',
-    opts:[{v:'0',l:'Nenhuma dor ou sintoma'},{v:'8',l:'Dor ou sintoma leve'},{v:'17',l:'Dor ou sintoma moderado'},{v:'25',l:'Dor ou sintoma grave'}] },
+  { id:'q1', text:'Na semana passada, você teve alguma dificuldade em participar no seu esporte por causa de algum incômodo, doenças ou outros problemas de saúde?',
+    opts:[{v:'0',l:'Participação total, sem dificuldade/incômodo'},{v:'8',l:'Participação total, mas com dificuldade/incômodo'},{v:'17',l:'Participação reduzida, por causa da dificuldade/incômodo'},{v:'25',l:'Não pude participar, devido à dificuldade/incômodo'}] },
+  { id:'q2', text:'Na semana passada, quanto você reduziu o volume do treinamento por causa de algum incômodo, doença ou outros problemas de saúde?',
+    opts:[{v:'0',l:'Nenhuma redução'},{v:'6',l:'Pequena redução'},{v:'13',l:'Moderada redução'},{v:'19',l:'Grande redução'},{v:'25',l:'Não pude treinar por causa de incômodo, doença ou problema de saúde'}] },
+  { id:'q3', text:'Na semana passada, quanto o incômodo ou problema de saúde reduziu o seu desempenho?',
+    opts:[{v:'0',l:'Nenhuma redução'},{v:'6',l:'Pequena redução'},{v:'13',l:'Moderada redução'},{v:'19',l:'Grande redução'},{v:'25',l:'Não pude treinar ou competir por causa de incômodo, doença ou problema de saúde'}] },
+  { id:'q4', text:'Na semana passada, qual foi a intensidade do seu incômodo ou problema de saúde?',
+    opts:[{v:'0',l:'Nenhum incômodo/Nenhum problema de saúde'},{v:'8',l:'Pequena intensidade'},{v:'17',l:'Moderada intensidade'},{v:'25',l:'Grande intensidade'}] },
 ];
 (function buildOSTRC() {
   var cont = document.getElementById('ostrc_container');
