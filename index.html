@@ -866,20 +866,212 @@ body {
   <div class="q-screen">
     <div class="q-block-header">
       <div class="q-block-tag">Parte 3 de 3</div>
-      <div class="q-block-title">Queixas músculo-esqueléticas</div>
-      <div class="q-block-desc">OSTRC-BR — Pimenta, Hespanhol &amp; Lopes, 2021 · Semana passada (últimos 7 dias)</div>
+      <div class="q-block-title">Problemas de saúde no esporte</div>
+      <div class="q-block-desc">OSTRC-BR — Pimenta, Hespanhol &amp; Lopes, 2021 · Semana passada</div>
     </div>
 
     <div class="instr">
-      <strong>Instrução:</strong> Para cada região do corpo, indique se você teve algum problema relacionado à prática esportiva nos <strong>últimos 7 dias</strong> — mesmo que não tenha impedido sua participação.
+      <strong>Instrução:</strong> As questões a seguir referem-se à <strong>semana passada</strong>. Responda mesmo que o problema não tenha impedido sua participação no esporte.
     </div>
     <div class="warn-instr">
-      ⚠ Inclua todos os problemas relacionados ao esporte, mesmo os menores. Responda para cada região separadamente.
+      ⚠ Inclua todos os incômodos, doenças ou problemas de saúde relacionados ao esporte, mesmo os menores.
     </div>
 
-    <div id="ostrc_container"></div>
+    <!-- Q1 — Participação -->
+    <div class="q-card" id="ostrc_q1card">
+      <div class="q-num">OSTRC — Q01</div>
+      <div class="q-text">Na semana passada, você teve alguma dificuldade em participar no seu esporte por causa de algum incômodo, doenças ou outros problemas de saúde?</div>
+      <div class="radio-group" id="ostrc_q1_opts">
+        <label class="radio-opt"><input type="radio" name="ostrc_q1" value="0" onchange="ostrcQ1Change()"><span class="opt-text">Participação total, sem dificuldade/incômodo</span></label>
+        <label class="radio-opt"><input type="radio" name="ostrc_q1" value="8" onchange="ostrcQ1Change()"><span class="opt-text">Participação total, mas com dificuldade/incômodo</span></label>
+        <label class="radio-opt"><input type="radio" name="ostrc_q1" value="17" onchange="ostrcQ1Change()"><span class="opt-text">Participação reduzida, por causa da dificuldade/incômodo</span></label>
+        <label class="radio-opt"><input type="radio" name="ostrc_q1" value="25" onchange="ostrcQ1Change()"><span class="opt-text">Não pude participar, devido à dificuldade/incômodo</span></label>
+      </div>
+    </div>
 
-    <p class="ref-note">Referência: Pimenta RM, Hespanhol L, Lopes AD. Braz J Phys Ther. 2021;25(6):785–793. Q1 e Q4: 0,8,17,25 · Q2 e Q3: 0,6,13,19,25 · Escore por região: 0–100. Período adaptado para 7 dias.</p>
+    <!-- Q2–Q4 aparecem só se houver problema (Q1 > 0) -->
+    <div id="ostrc_extra" style="display:none">
+
+      <!-- Q2 — Volume -->
+      <div class="q-card" id="ostrc_q2card">
+        <div class="q-num">OSTRC — Q02</div>
+        <div class="q-text">Na semana passada, quanto você reduziu o volume do treinamento por causa de algum incômodo, doença ou outros problemas de saúde?</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="ostrc_q2" value="0" onchange="markDone('ostrc_q2card')"><span class="opt-text">Nenhuma redução</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q2" value="6" onchange="markDone('ostrc_q2card')"><span class="opt-text">Pequena redução</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q2" value="13" onchange="markDone('ostrc_q2card')"><span class="opt-text">Moderada redução</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q2" value="19" onchange="markDone('ostrc_q2card')"><span class="opt-text">Grande redução</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q2" value="25" onchange="markDone('ostrc_q2card')"><span class="opt-text">Não pude treinar por causa de incômodo, doença ou problema de saúde</span></label>
+        </div>
+      </div>
+
+      <!-- Q3 — Desempenho -->
+      <div class="q-card" id="ostrc_q3card">
+        <div class="q-num">OSTRC — Q03</div>
+        <div class="q-text">Na semana passada, quanto o incômodo ou problema de saúde reduziu o seu desempenho?</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="ostrc_q3" value="0" onchange="markDone('ostrc_q3card')"><span class="opt-text">Nenhuma redução</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q3" value="6" onchange="markDone('ostrc_q3card')"><span class="opt-text">Pequena redução</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q3" value="13" onchange="markDone('ostrc_q3card')"><span class="opt-text">Moderada redução</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q3" value="19" onchange="markDone('ostrc_q3card')"><span class="opt-text">Grande redução</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q3" value="25" onchange="markDone('ostrc_q3card')"><span class="opt-text">Não pude treinar ou competir por causa de incômodo, doença ou problema de saúde</span></label>
+        </div>
+      </div>
+
+      <!-- Q4 — Sintomas -->
+      <div class="q-card" id="ostrc_q4card">
+        <div class="q-num">OSTRC — Q04</div>
+        <div class="q-text">Na semana passada, qual foi a intensidade do seu incômodo ou problema de saúde?</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="ostrc_q4" value="0" onchange="markDone('ostrc_q4card')"><span class="opt-text">Nenhum incômodo / Nenhum problema de saúde</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q4" value="8" onchange="markDone('ostrc_q4card')"><span class="opt-text">Pequena intensidade</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q4" value="17" onchange="markDone('ostrc_q4card')"><span class="opt-text">Moderada intensidade</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q4" value="25" onchange="markDone('ostrc_q4card')"><span class="opt-text">Grande intensidade</span></label>
+        </div>
+      </div>
+
+      <!-- Q5 — Resumo: lesão ou doença -->
+      <div class="q-card" id="ostrc_q5card">
+        <div class="q-num">OSTRC — Q05 (Resumo)</div>
+        <div class="q-text">O incômodo ou problema de saúde relatado nas quatro perguntas acima se refere a uma lesão ou doença?</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="ostrc_q5" value="Lesao" onchange="ostrcQ5Change()"><span class="opt-text">Lesão</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q5" value="Doenca" onchange="ostrcQ5Change()"><span class="opt-text">Doença</span></label>
+        </div>
+      </div>
+
+      <!-- Q6 — Área da lesão (aparece só se Lesão) -->
+      <div id="ostrc_q6_wrap" style="display:none">
+        <div class="q-card" id="ostrc_q6card">
+          <div class="q-num">OSTRC — Q06 (Área da lesão)</div>
+          <div class="q-text">Se o seu principal problema na semana passada foi uma <strong>lesão</strong>, por favor, marque/assinale a área lesionada ou que você teve queixa. Se você teve mais de uma lesão, marque a que foi mais grave.</div>
+          <div class="radio-group" id="ostrc_q6_opts">
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Cabeca_face" onchange="markDone('ostrc_q6card')"><span class="opt-text">Cabeça / face</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Nuca_pescoco" onchange="markDone('ostrc_q6card')"><span class="opt-text">Nuca / pescoço</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Ombro_incluindo_clavicula" onchange="markDone('ostrc_q6card')"><span class="opt-text">Ombro, incluindo a clavícula</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Parte_superior_braco" onchange="markDone('ostrc_q6card')"><span class="opt-text">Parte superior do braço</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Cotovelo" onchange="markDone('ostrc_q6card')"><span class="opt-text">Cotovelo</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Antebraco" onchange="markDone('ostrc_q6card')"><span class="opt-text">Antebraço</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Punho" onchange="markDone('ostrc_q6card')"><span class="opt-text">Punho</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Dedos_da_mao" onchange="markDone('ostrc_q6card')"><span class="opt-text">Dedos da mão</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Torax_orgaos_internos" onchange="markDone('ostrc_q6card')"><span class="opt-text">Tórax, incluindo órgãos internos</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Abdomen_orgaos_internos" onchange="markDone('ostrc_q6card')"><span class="opt-text">Abdômen, incluindo órgãos internos</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Parte_superior_coluna_toracica" onchange="markDone('ostrc_q6card')"><span class="opt-text">Parte superior da coluna (região torácica)</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Parte_inferior_coluna_lombar" onchange="markDone('ostrc_q6card')"><span class="opt-text">Parte inferior da coluna (região lombar)</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Pelve" onchange="markDone('ostrc_q6card')"><span class="opt-text">Pelve</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Quadril_virilha" onchange="markDone('ostrc_q6card')"><span class="opt-text">Quadril / virilha</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Coxa" onchange="markDone('ostrc_q6card')"><span class="opt-text">Coxa</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Joelho" onchange="markDone('ostrc_q6card')"><span class="opt-text">Joelho</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Panturrilha_perna" onchange="markDone('ostrc_q6card')"><span class="opt-text">Panturrilha / perna</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Tornozelo" onchange="markDone('ostrc_q6card')"><span class="opt-text">Tornozelo</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Pes_dedos" onchange="markDone('ostrc_q6card')"><span class="opt-text">Pés / dedos</span></label>
+            <label class="radio-opt"><input type="radio" name="ostrc_q6" value="Outra_parte" onchange="markDone('ostrc_q6card')"><span class="opt-text">Outra parte do corpo</span></label>
+          </div>
+          <input type="text" id="ostrc_q6_outra" placeholder="Especifique outra parte..." style="margin-top:0.75rem;font-family:Inter,sans-serif;font-size:0.88rem;color:#111;background:transparent;border:none;border-bottom:1px solid #e0e0e0;padding:0.4rem 0;outline:none;width:100%;display:none;">
+        </div>
+      </div>
+
+      <!-- Q7 — Sintomas da doença (aparece só se Doença) -->
+      <div id="ostrc_q7_wrap" style="display:none">
+        <div class="q-card" id="ostrc_q7card">
+          <div class="q-num">OSTRC — Q07 (Sintomas da doença)</div>
+          <div class="q-text">Se o seu principal problema na semana passada foi uma <strong>doença ou outros problemas relacionados à saúde</strong>, por favor, marque todos os sintomas que você teve no decorrer da semana passada.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="ostrc_q7_opts">
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Febre" style="accent-color:#111;width:15px;height:15px;flex-shrink:0;"><span class="opt-text">Febre</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Cocieira_erupcao_cutanea"><span class="opt-text">Coceira / erupção cutânea</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Fraqueza_cansaco"><span class="opt-text">Fraqueza / cansaço</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Pulso_irregular_taquicardia"><span class="opt-text">Pulso irregular / taquicardia</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Inchaço_ganglio"><span class="opt-text">Inchaço/edema dos gânglios linfáticos</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Dormencia_formigamento"><span class="opt-text">Dormência / formigamento</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Dor_garganta"><span class="opt-text">Dor de garganta / garganta inflamada</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Ansiedade"><span class="opt-text">Ansiedade</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Nariz_entupido"><span class="opt-text">Nariz entupido / coriza / espirros</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Depressao"><span class="opt-text">Depressão</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Tosse"><span class="opt-text">Tosse</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Irritacao"><span class="opt-text">Irritação</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Dificuldade_respiratoria"><span class="opt-text">Dificuldade respiratória / falta de ar</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Sintomas_olhos"><span class="opt-text">Sintomas nos olhos</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Dores_cabeca"><span class="opt-text">Dores de cabeça</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Sintomas_ouvidos"><span class="opt-text">Sintomas nos ouvidos</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Enjoo_mal_estar"><span class="opt-text">Enjoo / sensação de mal-estar</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Sintomas_vias_urinarias"><span class="opt-text">Sintomas nas vias urinárias ou órgão genitais</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Diarreia"><span class="opt-text">Diarreia</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Dores_peito"><span class="opt-text">Dores no peito</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Constipacao"><span class="opt-text">Constipação</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Dor_abdominal"><span class="opt-text">Dor abdominal</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Desmaio"><span class="opt-text">Desmaio</span></label>
+            <label class="radio-opt" style="cursor:pointer"><input type="checkbox" name="ostrc_q7" value="Dor_outras_regioes"><span class="opt-text">Dor em outras regiões</span></label>
+          </div>
+          <div style="margin-top:0.75rem;">
+            <div style="font-size:0.82rem;color:#aaa;margin-bottom:4px;">Por favor, especifique outros sintomas:</div>
+            <input type="text" id="ostrc_q7_outros" placeholder="Especifique..." style="font-family:Inter,sans-serif;font-size:0.88rem;color:#111;background:transparent;border:none;border-bottom:1px solid #e0e0e0;padding:0.4rem 0;outline:none;width:100%;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Q8 — Comentários -->
+      <div class="q-card">
+        <div class="q-num">OSTRC — Q08 (Comentários)</div>
+        <div class="q-text">Comentários / outras informações</div>
+        <div style="font-size:0.82rem;color:#aaa;margin-bottom:0.5rem;">Use este espaço se você deseja nos enviar algum comentário ou informações adicionais sobre esta lesão, doença ou problema de saúde.</div>
+        <textarea id="ostrc_q8_coment" placeholder="Comentários opcionais..." style="font-family:Inter,sans-serif;font-size:0.88rem;color:#111;background:#fafafa;border:1px solid #f0f0f0;border-radius:8px;padding:0.75rem;outline:none;width:100%;resize:vertical;min-height:70px;"></textarea>
+      </div>
+
+      <!-- Q9 — Tempo de afastamento -->
+      <div class="q-card" id="ostrc_q9card">
+        <div class="q-num">OSTRC — Q09 (Tempo de afastamento)</div>
+        <div class="q-text">Por favor, informe o número de dias da semana passada que você ficou completamente incapaz de treinar ou competir devido à lesão ou problema de saúde.</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="ostrc_q9" value="0 dia" onchange="markDone('ostrc_q9card')"><span class="opt-text">0 dia</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q9" value="1 dia" onchange="markDone('ostrc_q9card')"><span class="opt-text">1 dia</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q9" value="2 dias" onchange="markDone('ostrc_q9card')"><span class="opt-text">2 dias</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q9" value="3 dias" onchange="markDone('ostrc_q9card')"><span class="opt-text">3 dias</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q9" value="4 dias" onchange="markDone('ostrc_q9card')"><span class="opt-text">4 dias</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q9" value="5 dias" onchange="markDone('ostrc_q9card')"><span class="opt-text">5 dias</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q9" value="6 dias" onchange="markDone('ostrc_q9card')"><span class="opt-text">6 dias</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q9" value="7 dias" onchange="markDone('ostrc_q9card')"><span class="opt-text">7 dias</span></label>
+        </div>
+      </div>
+
+      <!-- Q10 — Registro/Notificação -->
+      <div class="q-card" id="ostrc_q10card">
+        <div class="q-num">OSTRC — Q10 (Registro)</div>
+        <div class="q-text">Esta é a primeira vez que você registra/relata esta lesão ou doença através deste questionário?</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="ostrc_q10" value="Primeira vez" onchange="markDone('ostrc_q10card')"><span class="opt-text">Sim, esta é a primeira vez</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q10" value="Registrei nas ultimas 4 semanas" onchange="markDone('ostrc_q10card')"><span class="opt-text">Não, eu já registrei/relatei esse mesmo problema em uma das últimas quatro semanas</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q10" value="Registrei ha mais de 4 semanas" onchange="markDone('ostrc_q10card')"><span class="opt-text">Não, eu já registrei/relatei antes, porém foi há mais de quatro semanas</span></label>
+        </div>
+      </div>
+
+      <!-- Q11 — Contato com equipe médica -->
+      <div class="q-card" id="ostrc_q11card">
+        <div class="q-num">OSTRC — Q11 (Contato com equipe médica)</div>
+        <div class="q-text">Eu relatei o problema para o:</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="ostrc_q11" value="Medico" onchange="markDone('ostrc_q11card')"><span class="opt-text">Médico</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q11" value="Outro medico" onchange="markDone('ostrc_q11card')"><span class="opt-text">Outro médico</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q11" value="Fisioterapeuta" onchange="markDone('ostrc_q11card')"><span class="opt-text">Fisioterapeuta</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q11" value="Outro fisioterapeuta" onchange="markDone('ostrc_q11card')"><span class="opt-text">Outro fisioterapeuta</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q11" value="Outro profissional" onchange="markDone('ostrc_q11card')"><span class="opt-text">Outro profissional</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q11" value="Outra pessoa" onchange="markDone('ostrc_q11card')"><span class="opt-text">Outra pessoa</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q11" value="Nao relatei" onchange="markDone('ostrc_q11card')"><span class="opt-text">Não relatei a ninguém</span></label>
+        </div>
+      </div>
+
+      <!-- Q12 — Outro problema -->
+      <div class="q-card" id="ostrc_q12card">
+        <div class="q-num">OSTRC — Q12</div>
+        <div class="q-text">Você teve algum outro incômodo, doença ou outro problema de saúde na semana passada?</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="ostrc_q12" value="Sim" onchange="markDone('ostrc_q12card')"><span class="opt-text">Sim</span></label>
+          <label class="radio-opt"><input type="radio" name="ostrc_q12" value="Nao" onchange="markDone('ostrc_q12card')"><span class="opt-text">Não</span></label>
+        </div>
+      </div>
+
+    </div><!-- /ostrc_extra -->
+
+    <p class="ref-note">Referência: Pimenta RM, Hespanhol L, Lopes AD. Braz J Phys Ther. 2021;25(6):785–793. Escore de severidade: Q1+Q2+Q3+Q4 (0–100). Q1,Q4: 0,8,17,25 · Q2,Q3: 0,6,13,19,25.</p>
 
     <div class="nav-wrap">
       <button class="btn-back" onclick="goTo(2)">← Voltar</button>
@@ -955,45 +1147,34 @@ var freqOpts = [
 })();
 
 // ════════════════════════════
-// OSTRC — regioes
+// OSTRC — lógica de exibição condicional
 // ════════════════════════════
-var ostrcRegioes = [
-  'Cabeca','Pescoco',
-  'Ombro direito','Ombro esquerdo',
-  'Cotovelo direito','Cotovelo esquerdo',
-  'Punho e mao direito','Punho e mao esquerdo',
-  'Tronco e regiao lombar',
-  'Quadril e virilha direito','Quadril e virilha esquerdo',
-  'Coxa direita','Coxa esquerda',
-  'Joelho direito','Joelho esquerdo',
-  'Perna, tornozelo e pe direito','Perna, tornozelo e pe esquerdo',
-];
-var ostrcQs = [
-  { id:'q1', text:'Na semana passada, você teve alguma dificuldade em participar no seu esporte por causa de algum incômodo, doenças ou outros problemas de saúde?',
-    opts:[{v:'0',l:'Participação total, sem dificuldade/incômodo'},{v:'8',l:'Participação total, mas com dificuldade/incômodo'},{v:'17',l:'Participação reduzida, por causa da dificuldade/incômodo'},{v:'25',l:'Não pude participar, devido à dificuldade/incômodo'}] },
-  { id:'q2', text:'Na semana passada, quanto você reduziu o volume do treinamento por causa de algum incômodo, doença ou outros problemas de saúde?',
-    opts:[{v:'0',l:'Nenhuma redução'},{v:'6',l:'Pequena redução'},{v:'13',l:'Moderada redução'},{v:'19',l:'Grande redução'},{v:'25',l:'Não pude treinar por causa de incômodo, doença ou problema de saúde'}] },
-  { id:'q3', text:'Na semana passada, quanto o incômodo ou problema de saúde reduziu o seu desempenho?',
-    opts:[{v:'0',l:'Nenhuma redução'},{v:'6',l:'Pequena redução'},{v:'13',l:'Moderada redução'},{v:'19',l:'Grande redução'},{v:'25',l:'Não pude treinar ou competir por causa de incômodo, doença ou problema de saúde'}] },
-  { id:'q4', text:'Na semana passada, qual foi a intensidade do seu incômodo ou problema de saúde?',
-    opts:[{v:'0',l:'Nenhum incômodo/Nenhum problema de saúde'},{v:'8',l:'Pequena intensidade'},{v:'17',l:'Moderada intensidade'},{v:'25',l:'Grande intensidade'}] },
-];
-(function buildOSTRC() {
-  var cont = document.getElementById('ostrc_container');
-  ostrcRegioes.forEach(function(reg, ri) {
-    var card = document.createElement('div');
-    card.className = 'ostrc-card';
-    card.id = 'ostrc_card_' + ri;
-    var body = ostrcQs.map(function(q) {
-      var opts = q.opts.map(function(o) {
-        return '<label class="radio-opt"><input type="radio" name="ostrc_' + ri + '_' + q.id + '" value="' + o.v + '" onchange="chkOSTRC(' + ri + ')"><span class="opt-text">' + o.l + '</span></label>';
-      }).join('');
-      return '<div><div class="ostrc-q-text">' + q.text + '</div><div class="radio-group">' + opts + '</div></div>';
-    }).join('');
-    card.innerHTML = '<div class="ostrc-card-head">' + reg + '</div><div class="ostrc-card-body">' + body + '</div>';
-    cont.appendChild(card);
-  });
-})();
+function ostrcQ1Change() {
+  var val = getRadio('ostrc_q1');
+  var extra = document.getElementById('ostrc_extra');
+  if (val && val !== '0') {
+    extra.style.display = 'block';
+  } else {
+    extra.style.display = 'none';
+  }
+  markDone('ostrc_q1card');
+}
+
+function ostrcQ5Change() {
+  var val = getRadio('ostrc_q5');
+  document.getElementById('ostrc_q6_wrap').style.display = (val === 'Lesao') ? 'block' : 'none';
+  document.getElementById('ostrc_q7_wrap').style.display = (val === 'Doenca') ? 'block' : 'none';
+  markDone('ostrc_q5card');
+}
+
+// Mostra campo "especifique" se selecionar "Outra parte"
+document.addEventListener('change', function(e) {
+  if (e.target.name === 'ostrc_q6' && e.target.value === 'Outra_parte') {
+    document.getElementById('ostrc_q6_outra').style.display = 'block';
+  } else if (e.target.name === 'ostrc_q6') {
+    document.getElementById('ostrc_q6_outra').style.display = 'none';
+  }
+});
 
 // ════════════════════════════
 // NAVEGAÇÃO
@@ -1039,10 +1220,7 @@ function chkIGI1() {
       document.querySelector('[name="igi_q1b"]:checked') &&
       document.querySelector('[name="igi_q1c"]:checked')) markDone('qi1card');
 }
-function chkOSTRC(ri) {
-  var all = ostrcQs.every(function(q) { return document.querySelector('[name="ostrc_' + ri + '_' + q.id + '"]:checked'); });
-  if (all) document.getElementById('ostrc_card_' + ri).classList.add('answered');
-}
+// chkOSTRC removido — substituido por ostrcQ1Change
 function getRadio(name) {
   var el = document.querySelector('[name="' + name + '"]:checked');
   return el ? el.value : null;
@@ -1114,15 +1292,32 @@ function classIGI(s) {
 
 // ════════════════════════════
 // CÁLCULO OSTRC-BR
+// Escore de severidade = Q1+Q2+Q3+Q4 (0–100)
+// Q1,Q4: 0,8,17,25 · Q2,Q3: 0,6,13,19,25
 // ════════════════════════════
 function calcOSTRC() {
-  var scores = ostrcRegioes.map(function(reg, ri) {
-    var s = ostrcQs.reduce(function(acc, q) { return acc + parseInt(getRadio('ostrc_' + ri + '_' + q.id) || 0); }, 0);
-    return { regiao: reg, score: s };
-  });
-  var affected = scores.filter(function(s) { return s.score > 0; });
-  var total = scores.reduce(function(a, b) { return a + b.score; }, 0);
-  return { scores: scores, affected: affected, totalBurden: total };
+  var q1 = parseInt(getRadio('ostrc_q1') || 0);
+  var q2 = parseInt(getRadio('ostrc_q2') || 0);
+  var q3 = parseInt(getRadio('ostrc_q3') || 0);
+  var q4 = parseInt(getRadio('ostrc_q4') || 0);
+  // Se Q1=0 (sem problema) o escore é 0
+  var severidade = q1 === 0 ? 0 : q1 + q2 + q3 + q4;
+  var temProblema = q1 > 0;
+  return {
+    q1: q1, q2: q2, q3: q3, q4: q4,
+    severidade: severidade,
+    temProblema: temProblema,
+    q5_tipo:     getRadio('ostrc_q5') || '',
+    q6_area:     getRadio('ostrc_q6') || '',
+    q6_outra:    (document.getElementById('ostrc_q6_outra') ? document.getElementById('ostrc_q6_outra').value : ''),
+    q7_sintomas: Array.from(document.querySelectorAll('[name="ostrc_q7"]:checked')).map(function(el){ return el.value; }).join('; '),
+    q7_outros:   (document.getElementById('ostrc_q7_outros') ? document.getElementById('ostrc_q7_outros').value : ''),
+    q8_coment:   (document.getElementById('ostrc_q8_coment') ? document.getElementById('ostrc_q8_coment').value : ''),
+    q9_afastar:  getRadio('ostrc_q9') || '',
+    q10_registro: getRadio('ostrc_q10') || '',
+    q11_contato: getRadio('ostrc_q11') || '',
+    q12_outro:   getRadio('ostrc_q12') || '',
+  };
 }
 
 // ════════════════════════════
@@ -1167,16 +1362,22 @@ function buildRow() {
   row['IGI_Classificacao'] = classIGI(igi.total);
 
   // OSTRC
-  ostrc.scores.forEach(function(s, i) {
-    var k = s.regiao.replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g,'_').replace(/_$/g,'');
-    row['OSTRC_' + k + '_Q1'] = getRadio('ostrc_' + i + '_q1') || '0';
-    row['OSTRC_' + k + '_Q2'] = getRadio('ostrc_' + i + '_q2') || '0';
-    row['OSTRC_' + k + '_Q3'] = getRadio('ostrc_' + i + '_q3') || '0';
-    row['OSTRC_' + k + '_Q4'] = getRadio('ostrc_' + i + '_q4') || '0';
-    row['OSTRC_' + k + '_Total'] = s.score;
-  });
-  row['OSTRC_Regioes_afetadas'] = ostrc.affected.length;
-  row['OSTRC_Carga_total'] = ostrc.totalBurden;
+  row['OSTRC_Q1_participacao']  = ostrc.q1;
+  row['OSTRC_Q2_volume']        = ostrc.q2;
+  row['OSTRC_Q3_desempenho']    = ostrc.q3;
+  row['OSTRC_Q4_sintomas']      = ostrc.q4;
+  row['OSTRC_Severidade_0a100'] = ostrc.severidade;
+  row['OSTRC_Tem_problema']     = ostrc.temProblema ? 'Sim' : 'Nao';
+  row['OSTRC_Q5_tipo']          = ostrc.q5_tipo;
+  row['OSTRC_Q6_area_lesao']    = ostrc.q6_area;
+  row['OSTRC_Q6_area_outra']    = ostrc.q6_outra;
+  row['OSTRC_Q7_sintomas_doenca'] = ostrc.q7_sintomas;
+  row['OSTRC_Q7_outros']        = ostrc.q7_outros;
+  row['OSTRC_Q8_comentarios']   = ostrc.q8_coment;
+  row['OSTRC_Q9_dias_afastamento'] = ostrc.q9_afastar;
+  row['OSTRC_Q10_registro']     = ostrc.q10_registro;
+  row['OSTRC_Q11_contato_medico'] = ostrc.q11_contato;
+  row['OSTRC_Q12_outro_problema'] = ostrc.q12_outro;
 
   return row;
 }
@@ -1219,7 +1420,7 @@ function finalize() {
 
   var psqiOk = psqi.total <= 5;
   var igiCls = igi.total <= 14 ? '' : igi.total <= 21 ? 'warn' : 'danger';
-  var ostrCls = ostrc.totalBurden >= 50 ? 'warn' : '';
+  var ostrCls = ostrc.severidade >= 50 ? 'warn' : '';
 
   document.getElementById('scores_display').innerHTML =
     '<div class="score-tile ' + (psqiOk ? '' : 'warn') + '">' +
@@ -1233,19 +1434,18 @@ function finalize() {
       '<div class="s-interp">' + classIGI(igi.total) + '</div>' +
     '</div>' +
     '<div class="score-tile ' + ostrCls + '">' +
-      '<div class="s-label">OSTRC</div>' +
-      '<div class="s-val">' + ostrc.totalBurden + '</div>' +
-      '<div class="s-interp">' + ostrc.affected.length + ' regiao(es) afetada(s)</div>' +
+      '<div class="s-label">OSTRC — Severidade</div>' +
+      '<div class="s-val">' + ostrc.severidade + '</div>' +
+      '<div class="s-interp">' + (ostrc.temProblema ? 'Problema relatado' : 'Sem problema') + '</div>' +
     '</div>';
 
-  var afet = ostrc.affected.length ? ostrc.affected.map(function(a) { return a.regiao + ' (' + a.score + 'pts)'; }).join('; ') : 'nenhuma';
-
   document.getElementById('interpretations').innerHTML =
-    '<p><strong>PSQI-BR (' + psqi.total + ' pts):</strong> Ponto de corte: <= 5 = boa qualidade; > 5 = ma qualidade. ' +
+    '<p><strong>PSQI-BR (' + psqi.total + ' pts):</strong> Ponto de corte: ≤ 5 = boa qualidade; &gt; 5 = má qualidade. ' +
     'Componentes: C1=' + psqi.c1 + ' C2=' + psqi.c2 + ' C3=' + psqi.c3 + ' C4=' + psqi.c4 + ' C5=' + psqi.c5 + ' C6=' + psqi.c6 + ' C7=' + psqi.c7 + '.</p>' +
-    '<p><strong>IGI-BR (' + igi.total + ' pts):</strong> 0–7 sem insonia; 8–14 subClinica; 15–21 moderada; 22–28 grave. ' +
-    'Classificacao: ' + classIGI(igi.total) + '.</p>' +
-    '<p><strong>OSTRC-BR (carga ' + ostrc.totalBurden + '):</strong> Regioes afetadas: ' + afet + '.</p>';
+    '<p><strong>IGI-BR (' + igi.total + ' pts):</strong> 0–7 sem insônia; 8–14 subclínica; 15–21 moderada; 22–28 grave. ' +
+    'Classificação: ' + classIGI(igi.total) + '.</p>' +
+    '<p><strong>OSTRC-BR (severidade ' + ostrc.severidade + '/100):</strong> ' +
+    (ostrc.temProblema ? ('Tipo: ' + (ostrc.q5_tipo || 'não informado') + '. Área: ' + (ostrc.q6_area || ostrc.q7_sintomas || 'não informada') + '.') : 'Sem problema de saúde relatado.') + '</p>';
 
   var row = buildRow();
   sendToSheets(row);
@@ -1275,6 +1475,9 @@ function resetForm() {
   document.querySelectorAll('input[type="radio"]').forEach(function(el) { el.checked = false; });
   document.querySelectorAll('select').forEach(function(el) { el.selectedIndex = 0; });
   document.querySelectorAll('.answered').forEach(function(el) { el.classList.remove('answered'); });
+  document.getElementById('ostrc_extra').style.display = 'none';
+  document.getElementById('ostrc_q6_wrap').style.display = 'none';
+  document.getElementById('ostrc_q7_wrap').style.display = 'none';
   document.getElementById('sheets_status').textContent = '';
   goTo(0);
 }
